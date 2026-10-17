@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livro O Tempo | Oséias de Souza Reis</title>
+    <meta name="description" content="Descubra como alinhar o seu coração ao relógio do Criador através de quatro chaves bíblicas transformadoras. Um livro de Oséias de Souza Reis.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            300: '#F3E5AB',
+                            400: '#D4AF37',
+                            500: '#C5A059',
+                            600: '#9A7B38',
+                        },
+                        wine: {
+                            700: '#5C1624',
+                            800: '#420D18',
+                            900: '#2A070E',
+                        },
+                        dark: {
+                            800: '#161412',
+                            900: '#0D0B0A',
+                        }
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        serif: ['Cormorant Garamond', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0D0B0A;
+            color: #F5F2EB;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        
+        /* Efeito 3D na Capa do Livro */
+        .book-container {
+            perspective: 1200px;
+        }
+        .book-card {
+            transform: rotateY(-14deg) rotateX(4deg);
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+            box-shadow: 
+                -15px 20px 35px rgba(0, 0, 0, 0.8),
+                -4px 0 0 #8c6f36,
+                -8px 0 0 #e6dec8,
+                -12px 0 0 #d4ccb8,
+                0 0 40px rgba(212, 175, 55, 0.15);
+        }
+        .book-card:hover {
+            transform: rotateY(-4deg) rotateX(2deg) scale(1.02);
+            box-shadow: 
+                -10px 25px 45px rgba(0, 0, 0, 0.9),
+                -4px 0 0 #8c6f36,
+                -8px 0 0 #e6dec8,
+                0 0 60px rgba(212, 175, 55, 0.25);
+        }
+
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 50%, #9A7B38 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gold-border-glow {
+            box-shadow: 0 0 25px -5px rgba(212, 175, 55, 0.2);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-gold-500 selection:text-dark-900">
+
+    <!-- BARRA DE TOPO -->
+    <div class="bg-gradient-to-r from-wine-900 via-wine-800 to-wine-900 border-b border-gold-500/20 py-2.5 px-4 text-center text-xs sm:text-sm text-gold-300 font-medium tracking-wide">
+        <span class="inline-flex items-center gap-1.5">
+            <i data-lucide="sparkles" class="w-4 h-4 text-gold-400"></i>
+            Lançamento Oficial — Uma jornada bíblica para alinhar sua alma ao relógio de Deus
+        </span>
+    </div>
+
+    <!-- HERO SECTION -->
+    <header class="relative overflow-hidden pt-10 pb-20 lg:pt-20 lg:pb-28 border-b border-white/10">
+        <!-- Luzes de fundo -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-gold-500/10 rounded-full blur-[130px] pointer-events-none"></div>
+        <div class="absolute bottom-0 right-10 w-[400px] h-[400px] bg-wine-700/20 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+                
+                <!-- Coluna de Texto (Esquerda) -->
+                <div class="lg:col-span-7 text-center lg:text-left space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-400 text-xs uppercase tracking-widest font-semibold">
+                        <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+                        Livro por Oséias de Souza Reis
+                    </div>
+
+                    <h1 class="font-cinzel text-3xl sm:text-5xl lg:text-[52px] font-bold leading-[1.15] tracking-tight">
+                        Você tem apenas deixado as horas passarem ou vivido a <span class="gold-gradient-text">eternidade dentro do seu tempo?</span>
+                    </h1>
+
+                    <p class="font-serif italic text-xl sm:text-2xl text-stone-300 leading-relaxed">
+                        "A pressa humana entrega o melhor no começo e termina na escassez. O tempo de Deus guarda o melhor vinho para o momento exato."
+                    </p>
+
+                    <p class="text-stone-400 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                        Descubra através de <strong>quatro pilares profundos das Escrituras</strong> como proteger processos no silêncio, agir quando o "vinho acaba", discernir a estação da sua vida e resgatar cada oportunidade com sabedoria.
+                    </p>
+
+                    <!-- Botões Principais de Ação -->
+                    <div class="pt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                        <a href="https://loja.infinitepay.io/oseias_reis/grj1776-livro-o-tempo" target="_blank" rel="noopener noreferrer" 
+                           class="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-gold-400 to-gold-600 text-dark-900 font-bold text-base sm:text-lg shadow-lg shadow-gold-500/20 hover:brightness-110 transition-all transform hover:-translate-y-0.5">
+                            <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                            Adquirir Meu Exemplar Agora
+                        </a>
+
+                        <a href="https://wa.me/5562985584287?text=Ol%C3%A1%2C%20Os%C3%A9ias!%20Vim%20pela%20p%C3%A1gina%20do%20livro%20*O%20Tempo*%20e%20gostaria%20de%20adquirir%20ou%20tirar%20uma%20d%C3%BAvida." target="_blank" rel="noopener noreferrer"
+                           class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-xl bg-emerald-600/20 border border-emerald-500/40 text-emerald-300 font-semibold text-base hover:bg-emerald-600/30 transition-all">
+                            <i data-lucide="message-circle" class="w-5 h-5 text-emerald-400"></i>
+                            Falar pelo WhatsApp
+                        </a>
+                    </div>
+
+                    <!-- Selos de Segurança -->
+                    <div class="pt-4 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs text-stone-400">
+                        <span class="flex items-center gap-1.5">
+                            <i data-lucide="shield-check" class="w-4 h-4 text-gold-400"></i>
+                            Pagamento 100% Seguro via InfinitePay
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <i data-lucide="heart-handshake" class="w-4 h-4 text-gold-400"></i>
+                            Inclui Orações e Autoexame por Capítulo
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Coluna do Livro 3D (Direita) -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="book-container py-6">
+                        <!-- Representação Visual da Capa A5 -->
+                        <div class="book-card relative w-[270px] sm:w-[310px] aspect-[1/1.42] rounded-r-xl bg-gradient-to-b from-dark-800 via-wine-900 to-dark-900 border border-gold-500/40 p-7 flex flex-col justify-between text-center overflow-hidden">
+                            
+                            <!-- Ornamento de fundo da capa -->
+                            <div class="absolute inset-2 border border-gold-500/20 rounded-r-lg pointer-events-none"></div>
+                            <div class="absolute -top-20 left-1/2 -translate-x-1/2 w-56 h-56 bg-gold-400/15 rounded-full blur-2xl pointer-events-none"></div>
+
+                            <!-- Topo da Capa -->
+                            <div class="relative z-10 pt-2 space-y-2">
+                                <p class="text-[10px] tracking-[0.25em] uppercase text-gold-300/80">Uma Jornada Pelas Escrituras</p>
+                                <div class="w-12 h-[1px] bg-gold-400/50 mx-auto"></div>
+                                <h2 class="font-cinzel text-4xl sm:text-5xl font-extrabold tracking-widest gold-gradient-text pt-2">
+                                    O TEMPO
+                                </h2>
+                                <p class="font-serif italic text-xs sm:text-sm text-stone-300 px-2 leading-snug">
+                                    Entre o Guardar no Coração, a Hora do Milagre, as Estações da Vida e o Remir de cada Oportunidade
+                                </p>
+                            </div>
+
+                            <!-- Símbolo Central (Relógio / Talha / Raízes) -->
+                            <div class="relative z-10 my-auto py-4 flex flex-col items-center justify-center">
+                                <div class="w-24 h-24 rounded-full border border-gold-400/40 bg-dark-900/60 flex items-center justify-center shadow-inner relative">
+                                    <i data-lucide="hourglass" class="w-11 h-11 text-gold-400 stroke-[1.25]"></i>
+                                    <div class="absolute -bottom-2 bg-wine-800 border border-gold-400/40 px-2.5 py-0.5 rounded-full text-[10px] text-gold-300 font-serif italic">
+                                        Chronos & Kairos
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Rodapé da Capa (Autor) -->
+                            <div class="relative z-10 pb-1">
+                                <div class="w-16 h-[1px] bg-gold-400/40 mx-auto mb-3"></div>
+                                <p class="font-cinzel text-xs sm:text-sm tracking-[0.2em] text-gold-300 font-semibold uppercase">
+                                    Oséias de Souza Reis
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- SEÇÃO DE IDENTIFICAÇÃO / O PROBLEMA DA PRESSA -->
+    <section class="py-16 lg:py-24 bg-dark-800/60 border-b border-white/5">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-8">
+            <h2 class="font-cinzel text-2xl sm:text-4xl font-bold text-white">
+                Por que tantas vezes nos sentimos <span class="text-gold-400">atrasados ou esgotados</span> na caminhada?
+            </h2>
+
+            <p class="text-stone-300 text-lg leading-relaxed">
+                Todos nós recebemos diariamente o mesmo depósito de <strong>24 horas (86.400 segundos)</strong>. Porém, na geração mais apressada da história, muitas das nossas maiores dores emocionais e frustrações espirituais nascem do descompasso entre a nossa urgência e o cronograma de Deus:
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-left pt-4">
+                <div class="p-6 rounded-2xl bg-dark-900/90 border border-white/10 flex gap-4 items-start">
+                    <div class="p-2.5 rounded-lg bg-wine-800/60 text-gold-400 shrink-0 mt-1">
+                        <i data-lucide="message-square-off" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-base mb-1">Falamos antes da hora</h3>
+                        <p class="text-stone-400 text-sm leading-relaxed">Tentamos decifrar ou expor processos que ainda estão em gestação, quando deveríamos guardar e meditar no coração.</p>
+                    </div>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-dark-900/90 border border-white/10 flex gap-4 items-start">
+                    <div class="p-2.5 rounded-lg bg-wine-800/60 text-gold-400 shrink-0 mt-1">
+                        <i data-lucide="wine-off" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-base mb-1">Desanimamos no "Ainda Não"</h3>
+                        <p class="text-stone-400 text-sm leading-relaxed">Quando o "vinho" da alegria ou dos recursos acaba, confundimos a espera da hora de Jesus com rejeição ou esquecimento.</p>
+                    </div>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-dark-900/90 border border-white/10 flex gap-4 items-start">
+                    <div class="p-2.5 rounded-lg bg-wine-800/60 text-gold-400 shrink-0 mt-1">
+                        <i data-lucide="cloud-rain" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-base mb-1">Brigamos com as Estações</h3>
+                        <p class="text-stone-400 text-sm leading-relaxed">Exigimos colheita no mês em que Deus está tratando as nossas raízes no inverno, comparando nosso relógio com o do próximo.</p>
+                    </div>
+                </div>
+
+                <div class="p-6 rounded-2xl bg-dark-900/90 border border-white/10 flex gap-4 items-start">
+                    <div class="p-2.5 rounded-lg bg-wine-800/60 text-gold-400 shrink-0 mt-1">
+                        <i data-lucide="alarm-clock-off" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-white text-base mb-1">Perdemos o Kairos de Deus</h3>
+                        <p class="text-stone-400 text-sm leading-relaxed">Deixamos ladrões de atenção roubarem as oportunidades preciosas de amar, perdoar, servir e cumprir nosso chamado hoje.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OS 4 PILARES DO LIVRO -->
+    <section class="py-20 lg:py-28 relative">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+                <span class="text-gold-400 text-xs font-bold uppercase tracking-[0.2em]">A Bússola Completa nas Escrituras</span>
+                <h2 class="font-cinzel text-3xl sm:text-4xl font-bold">
+                    As 4 Chaves Espirituais que Você Vai Descobrir Neste Livro
+                </h2>
+                <p class="text-stone-400 text-base sm:text-lg">
+                    Cada capítulo une revelação bíblica profunda, aplicação para o dia a dia e exercícios espirituais práticos.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Pilar 1 -->
+                <div class="group rounded-2xl bg-gradient-to-b from-dark-800 to-dark-900 border border-gold-500/20 p-8 hover:border-gold-400/50 transition-all gold-border-glow">
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="px-3 py-1 rounded-full bg-gold-500/10 text-gold-400 text-xs font-semibold tracking-wider uppercase">
+                            Lucas 2:19 e 2:51
+                        </span>
+                        <i data-lucide="heart" class="w-7 h-7 text-gold-400"></i>
+                    </div>
+                    <h3 class="font-cinzel text-xl sm:text-2xl font-bold text-white mb-3">
+                        1. O Tempo de Guardar no Coração
+                    </h3>
+                    <p class="text-stone-300 text-sm sm:text-base leading-relaxed mb-4">
+                        Por duas vezes a Bíblia registra que Maria, mãe de Jesus, <em>"guardava todas estas coisas, meditando-as em seu coração"</em> — tanto no nascimento quanto aos 12 anos no Templo, quando ainda não compreendia tudo.
+                    </p>
+                    <p class="text-gold-300/90 text-sm font-serif italic">
+                        → Aprenda a usar o coração como incubadora espiritual até que os mistérios de Deus se revelem no tempo certo.
+                    </p>
+                </div>
+
+                <!-- Pilar 2 -->
+                <div class="group rounded-2xl bg-gradient-to-b from-dark-800 to-dark-900 border border-gold-500/20 p-8 hover:border-gold-400/50 transition-all gold-border-glow">
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="px-3 py-1 rounded-full bg-gold-500/10 text-gold-400 text-xs font-semibold tracking-wider uppercase">
+                            João 2:1-11
+                        </span>
+                        <i data-lucide="Sparkles" class="w-7 h-7 text-gold-400"></i>
+                    </div>
+                    <h3 class="font-cinzel text-xl sm:text-2xl font-bold text-white mb-3">
+                        2. "Ainda Não é Chegada a Minha Hora"
+                    </h3>
+                    <p class="text-stone-300 text-sm sm:text-base leading-relaxed mb-4">
+                        Nas Bodas de Caná, o vinho acabou e Jesus disse que Sua hora ainda não havia chegado. Mas Maria deu a chave que abriu o primeiro milagre: <em>"Fazei tudo quanto Ele vos disser"</em>.
+                    </p>
+                    <p class="text-gold-300/90 text-sm font-serif italic">
+                        → Descubra como continuar enchendo as talhas de água em obediência até que Deus transforme sua espera no melhor vinho.
+                    </p>
+                </div>
+
+                <!-- Pilar 3 -->
+                <div class="group rounded-2xl bg-gradient-to-b from-dark-800 to-dark-900 border border-gold-500/20 p-8 hover:border-gold-400/50 transition-all gold-border-glow">
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="px-3 py-1 rounded-full bg-gold-500/10 text-gold-400 text-xs font-semibold tracking-wider uppercase">
+                            Eclesiastes 3:1-11
+                        </span>
+                        <i data-lucide="sun-snow" class="w-7 h-7 text-gold-400"></i>
+                    </div>
+                    <h3 class="font-cinzel text-xl sm:text-2xl font-bold text-white mb-3">
+                        3. A Sabedoria das Estações
+                    </h3>
+                    <p class="text-stone-300 text-sm sm:text-base leading-relaxed mb-4">
+                        Há tempo de plantar e de arrancar; de derribar e de edificar; de chorar e de dançar; de calar e de falar. Salomão nos mostra que a vida é composta por 14 pares de estações necessárias.
+                    </p>
+                    <p class="text-gold-300/90 text-sm font-serif italic">
+                        → Encontre paz para aceitar o ciclo atual e maturidade para saber o que reter e o que soltar em cada fase.
+                    </p>
+                </div>
+
+                <!-- Pilar 4 -->
+             
