@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -7,6 +8,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Biblioteca JSZip para empacotar o arquivo .DOCX real no celular -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
     <style>
         /* CONFIGURAÇÃO OFICIAL DE PÁGINA A5 PARA PDF / IMPRESSÃO */
@@ -26,10 +30,10 @@
             font-size: 11.5pt;
             line-height: 1.55;
             margin: 0;
-            padding: 70px 0 40px 0;
+            padding: 80px 0 40px 0;
         }
 
-        /* BARRA DE BOTÕES (NÃO SAI NO PDF NEM NO WORD) */
+        /* BARRA DE BOTÕES (NÃO SAI NO PDF) */
         .no-print-toolbar {
             position: fixed;
             top: 0;
@@ -75,6 +79,11 @@
         .btn-action:hover {
             filter: brightness(1.1);
             transform: translateY(-1px);
+        }
+
+        .btn-action:disabled {
+            opacity: 0.6;
+            cursor: wait;
         }
 
         /* CONTAINER VISUAL A5 NA TELA */
@@ -327,13 +336,13 @@
 </head>
 <body>
 
-    <!-- BARRA DE EXPORTAÇÃO (PDF E WORD A5) -->
+    <!-- BARRA DE EXPORTAÇÃO (PDF E DOCX OFICIAL A5) -->
     <div class="no-print-toolbar">
         <button class="btn-action btn-pdf" onclick="window.print()">
             📄 Salvar em PDF (Formato A5)
         </button>
-        <button class="btn-action btn-word" onclick="exportToWordA5()">
-            📝 Baixar em Word (.doc / A5 Editável)
+        <button id="btn-docx" class="btn-action btn-word" onclick="generateTrueDocxA5()">
+            📝 Baixar em Word (.docx A5 Oficial)
         </button>
     </div>
 
@@ -698,75 +707,196 @@
 
     </div>
 
-    <!-- SCRIPT DE EXPORTAÇÃO DIRETA PARA WORD (FORMATO A5) -->
+    <!-- GERADOR NATIVO DE ARQUIVO .DOCX REAL (OPENXML ZIPADO) COMPATÍVEL COM ANDROID/IOS/WORD -->
     <script>
-        function exportToWordA5() {
-            const content = document.getElementById('book-content').innerHTML;
-            
-            // Configuração específica do Microsoft Word para página A5 (148mm x 210mm)
-            const wordXmlHeader = `
-                <html xmlns:o='urn:schemas-microsoft-com:office:office' 
-                      xmlns:w='urn:schemas-microsoft-com:office:word' 
-                      xmlns='http://www.w3.org/TR/REC-html40'>
-                <head>
-                    <meta charset='utf-8'>
-                    <title>Livro O Tempo - Oséias de Souza Reis</title>
-                    <!--[if gte mso 9]>
-                    <xml>
-                        <w:WordDocument>
-                            <w:View>Print</w:View>
-                            <w:Zoom>100</w:Zoom>
-                            <w:DoNotOptimizeForBrowser/>
-                        </w:WordDocument>
-                    </xml>
-                    <![endif]-->
-                    <style>
-                        @page Section1 {
-                            size: 148mm 210mm;
-                            margin: 18mm 16mm 18mm 16mm;
-                            mso-header-margin: 10mm;
-                            mso-footer-margin: 10mm;
-                        }
-                        div.Section1 { page: Section1; }
-                        body {
-                            font-family: 'Garamond', 'Georgia', serif;
-                            font-size: 11.5pt;
-                            line-height: 1.5;
-                            color: #1a1817;
-                        }
-                        h1 { font-size: 18pt; color: #420D18; text-align: center; page-break-before: always; }
-                        h2 { font-size: 13pt; color: #420D18; margin-top: 14pt; }
-                        h3 { font-size: 11.5pt; color: #2b2623; margin-top: 10pt; }
-                        p { text-align: justify; margin-bottom: 8pt; text-indent: 18pt; }
-                        blockquote { font-style: italic; background: #f6f1e7; border-left: 3pt solid #9A7B38; padding: 8pt 12pt; margin: 12pt 0; }
-                        table { width: 100%; border-collapse: collapse; margin: 12pt 0; }
-                        th { background-color: #420D18; color: #ffffff; padding: 6pt; border: 1pt solid #420D18; }
-                        td { border: 1pt solid #cccccc; padding: 6pt; }
-                        .devotional-box { border: 1pt solid #c5a059; background-color: #f8f4ec; padding: 12pt; margin-top: 14pt; }
-                        .cover-page { text-align: center; background-color: #2A070E; color: #F3E5AB; padding: 30pt; }
-                    </style>
-                </head>
-                <body>
-                    <div class="Section1">
-                        ${content}
-                    </div>
-                </body>
-                </html>
-            `;
-
-            const blob = new Blob(['\ufeff', wordXmlHeader], {
-                type: 'application/msword'
+        function escapeXml(unsafe) {
+            return unsafe.replace(/[<>&'"]/g, function (c) {
+                switch (c) {
+                    case '<': return '&lt;';
+                    case '>': return '&gt;';
+                    case '&': return '&amp;';
+                    case '\'': return '&apos;';
+                    case '"': return '&quot;';
+                }
             });
+        }
 
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'Livro-O-Tempo-Oseias-Reis-A5.doc';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+        function createParagraphXml(text, options = {}) {
+            const align = options.align || 'both';
+            const size = options.size || 23; // 11.5pt = 23 half-points
+            const bold = options.bold ? '<w:b/>' : '';
+            const italic = options.italic ? '<w:i/>' : '';
+            const color = options.color ? `<w:color w:val="${options.color}"/>` : '<w:color w:val="1A1817"/>';
+            const spaceBefore = options.spaceBefore || 0;
+            const spaceAfter = options.spaceAfter || 140;
+            const firstLine = options.indent ? 'w:firstLine="360"' : '';
+            const pageBreak = options.pageBreak ? '<w:pageBreakBefore/>' : '';
+
+            return `
+                <w:p>
+                    <w:pPr>
+                        ${pageBreak}
+                        <w:jc w:val="${align}"/>
+                        <w:spacing w:before="${spaceBefore}" w:after="${spaceAfter}" w:line="320" w:lineRule="auto"/>
+                        ${firstLine ? `<w:ind ${firstLine}/>` : ''}
+                    </w:pPr>
+                    <w:r>
+                        <w:rPr>
+                            <w:rFonts w:ascii="Georgia" w:hAnsi="Georgia" w:cs="Georgia"/>
+                            ${bold}
+                            ${italic}
+                            ${color}
+                            <w:sz w:val="${size}"/>
+                            <w:szCs w:val="${size}"/>
+                        </w:rPr>
+                        <w:t xml:space="preserve">${escapeXml(text)}</w:t>
+                    </w:r>
+                </w:p>
+            `;
+        }
+
+        async function generateTrueDocxA5() {
+            const btn = document.getElementById('btn-docx');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Gerando .docx A5...';
+
+            try {
+                const zip = new JSZip();
+
+                // 1. [Content_Types].xml
+                zip.file("[Content_Types].xml", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+    <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+    <Default Extension="xml" ContentType="application/xml"/>
+    <Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+</Types>`);
+
+                // 2. _rels/.rels
+                zip.folder("_rels").file(".rels", `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+    <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>
+</Relationships>`);
+
+                // 3. Montagem dos parágrafos do livro em OpenXML
+                let bodyXml = '';
+
+                // CAPA / FOLHA DE ROSTO
+                bodyXml += createParagraphXml("UMA JORNADA PELAS ESCRITURAS", { align: 'center', size: 18, bold: true, color: '9A7B38', spaceBefore: 600, spaceAfter: 200 });
+                bodyXml += createParagraphXml("O TEMPO", { align: 'center', size: 56, bold: true, color: '420D18', spaceBefore: 200, spaceAfter: 200 });
+                bodyXml += createParagraphXml("Entre o Guardar no Coração, a Hora do Milagre, as Estações da Vida e o Remir de cada Oportunidade", { align: 'center', size: 26, italic: true, color: '555555', spaceAfter: 800 });
+                bodyXml += createParagraphXml("Autor: Oséias de Souza Reis", { align: 'center', size: 24, bold: true, color: '1A1817', spaceBefore: 800, spaceAfter: 400 });
+                bodyXml += createParagraphXml("© 2026 Oséias de Souza Reis — Edição Formato A5 (148 x 210 mm)", { align: 'center', size: 18, color: '666666', spaceBefore: 400 });
+
+                // SUMÁRIO
+                bodyXml += createParagraphXml("SUMÁRIO", { align: 'center', size: 32, bold: true, color: '420D18', pageBreak: true, spaceBefore: 200, spaceAfter: 300 });
+                const sumario = [
+                    "Prefácio: O Mistério dos Ponteiros e a Eternidade",
+                    "Introdução: A Pressa Moderna contra o Ritmo Divino",
+                    "Capítulo 1: O Tempo de Guardar no Coração — A Pedagogia do Silêncio em Maria",
+                    "Capítulo 2: 'Ainda Não é Chegada a Minha Hora' — O Tempo do Milagre nas Bodas de Caná",
+                    "Capítulo 3: O Tempo Determinado — A Sabedoria das Estações em Eclesiastes",
+                    "Capítulo 4: Chronos e Kairos — A Arte de Remir o Tempo segundo o Apóstolo Paulo",
+                    "Capítulo 5: Como Viver o Tempo Hoje — Práticas para uma Vida com Propósito",
+                    "Conclusão: Quando o Tempo se Encontrar com a Eternidade"
+                ];
+                sumario.forEach(item => {
+                    bodyXml += createParagraphXml("• " + item, { align: 'left', size: 22, spaceAfter: 140 });
+                });
+
+                // Leitura automática das seções da página para incluir todo o texto fielmente
+                const pages = document.querySelectorAll('#book-content .page');
+                pages.forEach((page, index) => {
+                    if (index < 2) return; // Pula folha de rosto e sumário já adicionados
+                    const elements = page.children;
+                    let isFirstInPage = true;
+
+                    for (let el of elements) {
+                        const pageBreak = isFirstInPage;
+                        isFirstInPage = false;
+
+                        if (el.classList.contains('chapter-number')) {
+                            bodyXml += createParagraphXml(el.innerText.toUpperCase(), { align: 'center', size: 18, bold: true, color: '8C6F36', pageBreak: pageBreak, spaceBefore: 120, spaceAfter: 60 });
+                        } else if (el.tagName === 'H1') {
+                            bodyXml += createParagraphXml(el.innerText, { align: 'center', size: 32, bold: true, color: '420D18', pageBreak: pageBreak, spaceBefore: 60, spaceAfter: 80 });
+                        } else if (el.classList.contains('chapter-subtitle')) {
+                            bodyXml += createParagraphXml(el.innerText, { align: 'center', size: 25, italic: true, color: '555555', spaceAfter: 260 });
+                        } else if (el.tagName === 'BLOCKQUOTE') {
+                            bodyXml += createParagraphXml(el.innerText.replace(/\n+/g, ' '), { align: 'both', size: 21, italic: true, color: '420D18', spaceBefore: 140, spaceAfter: 200 });
+                        } else if (el.tagName === 'H2') {
+                            bodyXml += createParagraphXml(el.innerText, { align: 'left', size: 25, bold: true, color: '420D18', spaceBefore: 220, spaceAfter: 100 });
+                        } else if (el.tagName === 'H3') {
+                            bodyXml += createParagraphXml(el.innerText, { align: 'left', size: 23, bold: true, color: '2B2623', spaceBefore: 180, spaceAfter: 80 });
+                        } else if (el.tagName === 'P') {
+                            bodyXml += createParagraphXml(el.innerText, { align: 'both', size: 23, indent: !el.classList.contains('no-indent'), spaceAfter: 140 });
+                        } else if (el.tagName === 'OL' || el.tagName === 'UL') {
+                            const items = el.querySelectorAll('li');
+                            items.forEach((li, i) => {
+                                const prefix = el.tagName === 'OL' ? `${i + 1}. ` : `• `;
+                                bodyXml += createParagraphXml(prefix + li.innerText, { align: 'both', size: 23, spaceAfter: 100 });
+                            });
+                        } else if (el.tagName === 'TABLE') {
+                            bodyXml += createParagraphXml("• Chronos: Tempo cronológico, sequencial e quantitativo (os ponteiros do relógio, o calendário, a idade que avança).", { align: 'both', size: 22, bold: true, spaceBefore: 100, spaceAfter: 100 });
+                            bodyXml += createParagraphXml("• Kairos: Tempo oportuno, qualitativo, a oportunidade decisiva (o momento único de fazer o bem, perdoar, servir e ouvir a Deus).", { align: 'both', size: 22, bold: true, spaceAfter: 180 });
+                        } else if (el.classList.contains('devotional-box')) {
+                            bodyXml += createParagraphXml("❖ PARA GUARDAR NO CORAÇÃO ❖", { align: 'center', size: 24, bold: true, color: '420D18', spaceBefore: 260, spaceAfter: 120 });
+                            bodyXml += createParagraphXml("Autoexame:", { align: 'left', size: 22, bold: true, spaceAfter: 80 });
+                            const questions = el.querySelectorAll('ol li');
+                            questions.forEach((q, idx) => {
+                                bodyXml += createParagraphXml(`${idx + 1}. ${q.innerText}`, { align: 'both', size: 22, spaceAfter: 80 });
+                            });
+                            const prayer = el.querySelector('.prayer-text');
+                            if (prayer) {
+                                bodyXml += createParagraphXml(prayer.innerText, { align: 'both', size: 22, italic: true, color: '332D29', spaceBefore: 120, spaceAfter: 200 });
+                            }
+                        }
+                    }
+                });
+
+                // CONTRACAPA NO FINAL DO DOCX
+                bodyXml += createParagraphXml("SINOPSE / QUARTA CAPA", { align: 'center', size: 28, bold: true, color: '420D18', pageBreak: true, spaceBefore: 200, spaceAfter: 200 });
+                bodyXml += createParagraphXml("Você tem apenas deixado as horas passarem ou vivido a eternidade dentro do seu tempo?", { align: 'center', size: 24, bold: true, color: '8C6F36', spaceAfter: 200 });
+                bodyXml += createParagraphXml("Vivemos na geração mais apressada da história. Corremos contra os ponteiros do relógio, tentamos antecipar respostas que ainda estão em gestação e, muitas vezes, nos desesperamos quando o 'vinho' da alegria seca antes do fim da festa. Mas o relógio de Deus não funciona na frequência da ansiedade humana.", { align: 'both', size: 23, indent: true, spaceAfter: 160 });
+                bodyXml += createParagraphXml("Em O Tempo, Oséias de Souza Reis conduz você por uma jornada profunda pelas Escrituras através de quatro chaves bíblicas transformadoras: O Segredo do Silêncio (Lucas 2), A Hora do Milagre (João 2), A Sabedoria das Estações (Eclesiastes 3) e O Resgate das Oportunidades (Efésios 5).", { align: 'both', size: 23, indent: true, spaceAfter: 220 });
+                bodyXml += createParagraphXml("\"A pressa humana entrega o melhor no começo e termina na escassez. O tempo de Deus guarda o melhor vinho para o momento exato.\"", { align: 'center', size: 23, italic: true, color: '420D18', spaceBefore: 200 });
+
+                // 4. word/document.xml configurado com medidas exatas A5 (w:w="8391" w:h="11906" em twips = 148mm x 210mm)
+                const documentXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+    <w:body>
+        ${bodyXml}
+        <w:sectPr>
+            <w:pgSz w:w="8391" w:h="11906"/>
+            <w:pgMar w:top="1020" w:right="907" w:bottom="1020" w:left="907" w:header="567" w:footer="567" w:gutter="0"/>
+        </w:sectPr>
+    </w:body>
+</w:document>`;
+
+                zip.folder("word").file("document.xml", documentXml);
+
+                // Gera o arquivo binário .docx real
+                const blob = await zip.generateAsync({
+                    type: "blob",
+                    mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                });
+
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'Livro-O-Tempo-Oseias-Reis-A5.docx';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+
+            } catch (err) {
+                alert("Erro ao gerar DOCX: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
         }
     </script>
 </body>
 </html>
+```
