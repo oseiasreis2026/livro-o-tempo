@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livro O Tempo - Oséias de Souza Reis (Edição A5)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* CONFIGURAÇÃO OFICIAL DE PÁGINA A5 PARA PDF / IMPRESSÃO */
+        @page {
+            size: 148mm 210mm;
+            margin: 18mm 16mm 18mm 16mm;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #262320;
+            color: #1a1817;
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 11.5pt;
+            line-height: 1.55;
+            margin: 0;
+            padding: 70px 0 40px 0;
+        }
+
+        /* BARRA DE BOTÕES (NÃO SAI NO PDF NEM NO WORD) */
+        .no-print-toolbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #141210;
+            border-bottom: 2px solid #D4AF37;
+            padding: 12px 16px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            z-index: 9999;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            font-family: sans-serif;
+        }
+
+        .btn-action {
+            cursor: pointer;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .btn-pdf {
+            background: linear-gradient(135deg, #D4AF37, #9A7B38);
+            color: #0D0B0A;
+        }
+
+        .btn-word {
+            background: #1e40af;
+            color: #ffffff;
+            border: 1px solid #3b82f6;
+        }
+
+        .btn-action:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
+
+        /* CONTAINER VISUAL A5 NA TELA */
+        .book-wrapper {
+            width: 148mm;
+            margin: 0 auto;
+            background: #fdfbf7;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+        }
+
+        .page {
+            padding: 18mm 16mm;
+            page-break-after: always;
+            break-after: page;
+            position: relative;
+        }
+
+        /* CAPA DO LIVRO */
+        .cover-page {
+            background: linear-gradient(180deg, #161210 0%, #3a0d17 50%, #120f0e 100%);
+            color: #f5f0e6;
+            height: 210mm;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: center;
+            padding: 20mm 15mm;
+            border: 4px double #D4AF37;
+            page-break-after: always;
+        }
+
+        .cover-subtitle-top {
+            font-family: 'Cinzel', serif;
+            font-size: 8.5pt;
+            letter-spacing: 3px;
+            color: #D4AF37;
+            text-transform: uppercase;
+        }
+
+        .cover-title {
+            font-family: 'Cinzel', serif;
+            font-size: 34pt;
+            font-weight: 800;
+            letter-spacing: 5px;
+            color: #F3E5AB;
+            margin: 15px 0 10px 0;
+        }
+
+        .cover-tagline {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-style: italic;
+            font-size: 12.5pt;
+            color: #e2d9c8;
+            line-height: 1.4;
+        }
+
+        .cover-ornament {
+            font-size: 26pt;
+            color: #D4AF37;
+            margin: 25px 0;
+        }
+
+        .cover-author {
+            font-family: 'Cinzel', serif;
+            font-size: 11pt;
+            letter-spacing: 3px;
+            color: #D4AF37;
+            text-transform: uppercase;
+            border-top: 1px solid rgba(212, 175, 55, 0.4);
+            padding-top: 12px;
+        }
+
+        /* TIPOGRAFIA EDITORIAL */
+        h1.chapter-title {
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: 17pt;
+            color: #420D18;
+            text-align: center;
+            margin-top: 10mm;
+            margin-bottom: 4px;
+            line-height: 1.25;
+        }
+
+        .chapter-number {
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: 9pt;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #8c6f36;
+            text-align: center;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .chapter-subtitle {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            font-style: italic;
+            font-size: 13pt;
+            color: #555;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 18px;
+        }
+
+        h2 {
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: 12.5pt;
+            color: #420D18;
+            margin-top: 18px;
+            margin-bottom: 6px;
+        }
+
+        h3 {
+            font-family: 'EB Garamond', Georgia, serif;
+            font-size: 11.5pt;
+            font-weight: bold;
+            color: #2b2623;
+            margin-top: 14px;
+            margin-bottom: 4px;
+        }
+
+        p {
+            text-align: justify;
+            margin-top: 0;
+            margin-bottom: 10px;
+            text-indent: 1.2em;
+        }
+
+        p.no-indent {
+            text-indent: 0;
+        }
+
+        blockquote.epigraph {
+            font-style: italic;
+            background: #f6f1e7;
+            border-left: 3px solid #9A7B38;
+            margin: 14px 0 18px 0;
+            padding: 10px 14px;
+            font-size: 10.5pt;
+            text-align: justify;
+        }
+
+        ul, ol {
+            margin-top: 6px;
+            margin-bottom: 12px;
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 6px;
+            text-align: justify;
+        }
+
+        /* TABELA CHRONOS E KAIROS */
+        table.book-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0;
+            font-size: 10pt;
+        }
+
+        table.book-table th {
+            background-color: #420D18;
+            color: #ffffff;
+            padding: 6px 8px;
+            text-align: left;
+            font-family: 'Cinzel', serif;
+        }
+
+        table.book-table td {
+            border: 1px solid #d4ccb8;
+            padding: 6px 8px;
+            vertical-align: top;
+        }
+
+        /* CAIXA DEVOCIONAL: PARA GUARDAR NO CORAÇÃO */
+        .devotional-box {
+            margin-top: 20px;
+            padding: 14px 16px;
+            background-color: #f8f4ec;
+            border: 1px solid #c5a059;
+            border-radius: 6px;
+            page-break-inside: avoid;
+        }
+
+        .devotional-title {
+            font-family: 'Cinzel', Georgia, serif;
+            font-size: 11.5pt;
+            color: #420D18;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #dfd5c0;
+            padding-bottom: 4px;
+        }
+
+        .prayer-text {
+            font-style: italic;
+            color: #332d29;
+            text-indent: 0;
+            margin-top: 8px;
+            margin-bottom: 0;
+        }
+
+        .divider {
+            text-align: center;
+            color: #9A7B38;
+            margin: 16px 0;
+            font-size: 12pt;
+            letter-spacing: 6px;
+        }
+
+        /* REGRAS DE IMPRESSÃO PDF */
+        @media print {
+            body {
+                background: #ffffff;
+                padding: 0;
+            }
+            .no-print-toolbar {
+                display: none !important;
+            }
+            .book-wrapper {
+                width: 100%;
+                box-shadow: none;
+                background: #ffffff;
+            }
+            .page {
+                padding: 0;
+            }
+            .cover-page {
+                height: 100vh;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .devotional-box, blockquote.epigraph, table.book-table th {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .book-wrapper {
+                width: 95%;
+            }
+            .page {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- BARRA DE EXPORTAÇÃO (PDF E WORD A5) -->
+    <div class="no-print-toolbar">
+        <button class="btn-action btn-pdf" onclick="window.print()">
+            📄 Salvar em PDF (Formato A5)
+        </button>
+        <button class="btn-action btn-word" onclick="exportToWordA5()">
+            📝 Baixar em Word (.doc / A5 Editável)
+        </button>
+    </div>
+
+    <!-- CONTEÚDO COMPLETO DO LIVRO -->
+    <div class="book-wrapper" id="book-content">
+
+        <!-- CAPA -->
+        <div class="cover-page">
+            <div class="cover-subtitle-top">Uma Jornada Pelas Escrituras</div>
+            <div>
+                <div class="cover-title">O TEMPO</div>
+                <div class="cover-tagline">
+                    Entre o Guardar no Coração, a Hora do Milagre,<br>
+                    as Estações da Vida e o Remir de cada Oportunidade
+                </div>
+                <div class="cover-ornament">❖</div>
+            </div>
+            <div class="cover-author">Oséias de Souza Reis</div>
+        </div>
+
+        <!-- FOLHA DE ROSTO E FICHA EDITORIAL -->
+        <div class="page" style="text-align: center; display: flex; flex-direction: column; justify-content: space-between; min-height: 170mm;">
+            <div style="margin-top: 20mm;">
+                <h1 class="chapter-title" style="font-size: 24pt; margin-bottom: 8px;">O TEMPO</h1>
+                <p class="chapter-subtitle" style="text-indent: 0;">
+                    Entre o Guardar no Coração, a Hora do Milagre, as Estações da Vida e o Remir de cada Oportunidade
+                </p>
+                <div class="divider">✦ ✦ ✦</div>
+                <p class="no-indent" style="text-align: center; font-weight: bold; margin-top: 20mm;">
+                    Autor: Oséias de Souza Reis
+                </p>
+            </div>
+
+            <div style="font-size: 9.5pt; color: #555; border-top: 1px solid #ccc; padding-top: 12px; text-align: center;">
+                <p class="no-indent" style="text-align: center; margin-bottom: 4px;"><strong>© 2026 Oséias de Souza Reis</strong></p>
+                <p class="no-indent" style="text-align: center; margin-bottom: 4px;">Todos os direitos reservados. Proibida a reprodução total ou parcial sem autorização prévia do autor.</p>
+                <p class="no-indent" style="text-align: center; margin-bottom: 0;">Edição Digital e Impressa — Formato A5 (148 x 210 mm)</p>
+            </div>
+        </div>
+
+        <!-- SUMÁRIO -->
+        <div class="page">
+            <h1 class="chapter-title">Sumário</h1>
+            <div class="divider">❖</div>
+            <ul style="list-style: none; padding-left: 0; line-height: 2;">
+                <li><strong>Prefácio:</strong> O Mistério dos Ponteiros e a Eternidade</li>
+                <li><strong>Introdução:</strong> A Pressa Moderna contra o Ritmo Divino</li>
+                <li><strong>Capítulo 1:</strong> O Tempo de Guardar no Coração — <em>A Pedagogia do Silêncio em Maria</em></li>
+                <li><strong>Capítulo 2:</strong> "Ainda Não é Chegada a Minha Hora" — <em>O Tempo do Milagre nas Bodas de Caná</em></li>
+                <li><strong>Capítulo 3:</strong> O Tempo Determinado — <em>A Sabedoria das Estações em Eclesiastes</em></li>
+                <li><strong>Capítulo 4:</strong> Chronos e Kairos — <em>A Arte de Remir o Tempo segundo o Apóstolo Paulo</em></li>
+                <li><strong>Capítulo 5:</strong> Como Viver o Tempo Hoje — <em>Práticas para uma Vida com Propósito</em></li>
+                <li><strong>Conclusão:</strong> Quando o Tempo se Encontrar com a Eternidade</li>
+            </ul>
+        </div>
+
+        <!-- PREFÁCIO -->
+        <div class="page">
+            <span class="chapter-number">Abertura</span>
+            <h1 class="chapter-title">Prefácio</h1>
+            <p class="chapter-subtitle">O Mistério dos Ponteiros e a Eternidade</p>
+
+            <p class="no-indent">Todos nós recebemos diariamente o mesmo depósito em nossa conta existencial: vinte e quatro horas, mil quatrocentos e quarenta minutos, oitenta e seis mil e quatrocentos segundos. Nenhum homem, por mais rico ou sábio que seja, consegue comprar um minuto a mais; e nenhum ser humano, por mais simples que viva, recebe um segundo a menos. O tempo é a moeda mais democrática e, ao mesmo tempo, a mais implacável da existência humana.</p>
+
+            <p>No entanto, quando abrimos as Escrituras Sagradas, descobrimos que o tempo não é apenas uma linha reta que corre do berço ao túmulo. Na visão bíblica, o tempo é um <strong>solo sagrado</strong> onde Deus planta propósitos, trabalha o nosso caráter, transforma a água da nossa necessidade no vinho da Sua provisão e nos convida a tomar decisões que ecoam na eternidade.</p>
+
+            <p>Este livro nasceu de quatro pilares fundamentais sobre a Palavra de Deus:</p>
+            <ol>
+                <li>Como lidar com aquilo que Deus faz, mas que ainda não compreendemos totalmente? <em>(O exemplo de Maria em Lucas 2)</em></li>
+                <li>Como reagir quando apresentamos uma necessidade a Jesus e ouvimos d'Ele que "ainda não é chegada a hora"? <em>(O milagre em Caná da Galileia em João 2)</em></li>
+                <li>Como aceitar os ciclos inevitáveis de ganhos, perdas, lágrimas e sorrisos da nossa caminhada? <em>(A sabedoria de Eclesiastes 3)</em></li>
+                <li>Como agir com prudência para não desperdiçarmos a única vida que temos? <em>(O chamado de Paulo para remir o tempo em Efésios e Colossenses)</em></li>
+            </ol>
+
+            <p>Que a leitura destas páginas desacelere a sua alma e alinhe o seu coração ao relógio do Criador.</p>
+        </div>
+
+        <!-- INTRODUÇÃO -->
+        <div class="page">
+            <span class="chapter-number">Pórtico</span>
+            <h1 class="chapter-title">Introdução</h1>
+            <p class="chapter-subtitle">A Pressa Moderna contra o Ritmo Divino</p>
+
+            <p class="no-indent">Vivemos na geração mais apressada da história. Corremos contra o relógio, engolimos refeições, acumulamos tarefas e, muitas vezes, chegamos ao fim do dia com a sensação amarga de que fizemos muito, mas vivemos pouco. A ansiedade nada mais é do que a tentativa humana de habitar um futuro que ainda não chegou, enquanto a amargura é a prisão em um passado que já não pode ser alterado.</p>
+
+            <p>Deus não trabalha na frequência do desespero humano. Do Gênesis ao Apocalipse, vemos um Deus que age no tempo exato. Quando olhamos para a Bíblia, percebemos que a maturidade espiritual está diretamente ligada à forma como nos relacionamos com o tempo:</p>
+
+            <ul>
+                <li>Há coisas que <strong>não são para serem respondidas agora</strong>, mas guardadas e meditadas no coração.</li>
+                <li>Há milagres que <strong>não acontecem no grito da nossa urgência</strong>, mas na submissão à "hora" de Cristo e na obediência silenciosa.</li>
+                <li>Há fases que <strong>não podem ser puladas</strong>, porque cada estação cumpre um propósito debaixo do céu.</li>
+                <li>E há oportunidades que <strong>não podem ser adiadas</strong>, pois exigem sabedoria imediata para serem resgatadas.</li>
+            </ul>
+
+            <p>Compreender essa jornada é encontrar o equilíbrio perfeito entre a <strong>espera</strong>, a <strong>obediência</strong>, a <strong>aceitação</strong> e a <strong>ação</strong>.</p>
+        </div>
+
+        <!-- CAPÍTULO 1 -->
+        <div class="page">
+            <span class="chapter-number">Capítulo 1</span>
+            <h1 class="chapter-title">O Tempo de Guardar no Coração</h1>
+            <p class="chapter-subtitle">A Pedagogia do Silêncio e da Espera em Maria</p>
+
+            <blockquote class="epigraph">
+                "Maria, porém, guardava todas estas palavras, meditando-as no seu coração." (Lucas 2:19)<br>
+                "E desceu com eles, e foi para Nazaré, e era-lhes sujeito. E sua mãe guardava todas estas coisas no seu coração." (Lucas 2:51)
+            </blockquote>
+
+            <p class="no-indent">Por duas vezes no capítulo 2 do Evangelho de Lucas, o texto sagrado faz questão de registrar uma atitude silenciosa e profunda de Maria, mãe de Jesus: <strong>ela guardava tudo no coração</strong>.</p>
+
+            <h2>O primeiro momento: Diante da promessa e do extraordinário (Lucas 2:19)</h2>
+            <p class="no-indent">Jesus havia acabado de nascer em condições humildes em Belém. De repente, pastores chegam contando visões angelicais e glorificando a Deus. Tudo era grandioso, mas também cercado de mistério. Como aquela criança deitada numa manjedoura seria o Salvador do mundo?</p>
+            <p>Maria não saiu gritando respostas apressadas, nem exigiu que Deus lhe mostrasse o roteiro completo dos próximos trinta anos. Ela <strong>guardou as palavras e as meditou</strong>. No grego original, o verbo traduzido como "meditar" (<em>symballousa</em>) traz a ideia de <em>juntar as peças, ponderar, colocar lado a lado para compreender no tempo certo</em>.</p>
+
+            <h2>O segundo momento: Diante do que não se entende (Lucas 2:51)</h2>
+            <p class="no-indent">Doze anos se passam. Jesus fica no Templo em Jerusalém conversando com os doutores da Lei. Quando José e Maria O encontram e O questionam, Jesus responde: <em>"Não sabíeis que me cumpria tratar dos negócios de meu Pai?"</em>. O versículo 50 diz claramente que <strong>eles não compreenderam as palavras que Ele lhes dissera</strong>.</p>
+            <p>Qual foi a reação de Maria diante do que ela ainda não entendia? Mais uma vez, <strong>ela guardou todas estas coisas no seu coração</strong>.</p>
+
+            <h2>A lição para nós: Nem tudo está pronto para ser falado hoje</h2>
+            <p class="no-indent">Nosso maior erro no tempo é querer decifrar imediatamente todos os mistérios de Deus ou expor processos que ainda estão em gestação.</p>
+            <ol>
+                <li><strong>A maturidade sabe calar para ouvir:</strong> Quem fala tudo o que pensa na hora em que sente, acaba ferindo processos que precisavam de amadurecimento.</li>
+                <li><strong>O coração como cofre e incubadora:</strong> Guardar no coração não é reprimir mágoas; é preservar as promessas e os acontecimentos de Deus até que o tempo revele o significado completo.</li>
+            </ol>
+            <p>Durante trinta anos, Maria guardou aquelas sementes no coração. E foi exatamente essa paciência acumulada que a preparou para o primeiro milagre público de Jesus.</p>
+
+            <div class="devotional-box">
+                <h3 class="devotional-title">❖ Para Guardar no Coração ❖</h3>
+                <p class="no-indent"><strong>Autoexame:</strong></p>
+                <ol>
+                    <li>Tenho o hábito de falar impulsivamente sobre os meus processos e promessas antes que eles amadureçam em Deus?</li>
+                    <li>Como costumo reagir quando Deus permite situações na minha caminhada que eu não consigo entender imediatamente?</li>
+                    <li>O que tenho acumulado dentro do meu coração ultimamente: ansiedade e murmuração, ou a meditação silenciosa na fidelidade do Senhor?</li>
+                </ol>
+                <p class="prayer-text"><strong>Oração:</strong> "Senhor meu Deus, ensina-me a santa pedagogia do silêncio. Livra-me da pressa de querer explicar tudo ou de exigir respostas para processos que ainda estão em gestação nas Tuas mãos. Dá-me um coração como o de Maria, que sabe guardar as Tuas palavras, ponderar os Teus caminhos e esperar em paz até que o Teu propósito se revele por completo. Em nome de Jesus, amém."</p>
+            </div>
+        </div>
+
+        <!-- CAPÍTULO 2 -->
+        <div class="page">
+            <span class="chapter-number">Capítulo 2</span>
+            <h1 class="chapter-title">"Ainda Não é Chegada a Minha Hora"</h1>
+            <p class="chapter-subtitle">O Tempo do Milagre nas Bodas de Caná</p>
+
+            <blockquote class="epigraph">
+                "E, faltando o vinho, a mãe de Jesus lhe disse: Não têm vinho. Disse-lhe Jesus: Mulher, que tenho eu contigo? Ainda não é chegada a minha hora. Sua mãe disse aos serventes: Fazei tudo quanto ele vos disser." (João 2:3-5)
+            </blockquote>
+
+            <p class="no-indent">No capítulo 2 do Evangelho de João, encontramos uma cena cotidiana que se transforma em um divisor de águas espiritual: um casamento em Caná da Galileia. No meio da festa, acontece uma tragédia social para os padrões da época: <strong>o vinho acabou</strong>.</p>
+            <p>O vinho, na Bíblia, é símbolo da alegria, da celebração e da vitalidade. Quantas vezes, no meio da nossa caminhada, da nossa família ou do nosso ministério, o "vinho" simplesmente acaba? O entusiasmo seca, os recursos chegam ao fim e nos vemos diante do constrangimento da escassez.</p>
+
+            <h2>O Encontro entre a Urgência Humana e o Relógio Divino</h2>
+            <p class="no-indent">Percebendo a falta, Maria vai até Jesus e apresenta a necessidade com uma frase curta: <em>"Eles não têm mais vinho"</em>. A resposta de Jesus, à primeira vista, parece desconcertante: <em>"Mulher, que tenho eu contigo? Ainda não é chegada a minha hora"</em> (João 2:4).</p>
+            <p>O que Jesus estava ensinando ali sobre o <strong>tempo</strong>?</p>
+            <ol>
+                <li><strong>Deus não é movido por pressão externa, mas por propósito eterno:</strong> A "hora" de Jesus no Evangelho de João refere-se ao cronograma perfeito determinado pelo Pai. Nem mesmo o afeto familiar poderia apressar o relógio divino.</li>
+                <li><strong>Um "ainda não" de Deus não é uma rejeição:</strong> Quando Jesus diz <em>"Ainda não é chegada a minha hora"</em>, muitas pessoas imaturas teriam ido embora frustradas. Mas Maria era a mulher que passou trinta anos guardando as coisas de Deus no coração!</li>
+            </ol>
+
+            <h2>A Chave que Move o Tempo do Milagre: A Obediência</h2>
+            <p class="no-indent">Maria não discutiu com o relógio de Jesus. Ela conhecia o caráter d'Ele. Por isso, vira-se para os serventes e deixa registrado um dos maiores conselhos de todas as Escrituras: <strong>"Fazei tudo quanto ele vos disser"</strong> (João 2:5).</p>
+            <p>Enquanto a hora do milagre não se manifesta aos nossos olhos, o nosso papel é preparar o ambiente através da obediência. Havia ali seis talhas de pedra vazias. Jesus ordenou um trabalho simples: <em>"Enchei de água essas talhas"</em> (João 2:7). E depois: <em>"Tirai agora, e levai ao mestre-sala"</em> (João 2:8).</p>
+
+            <h2>Da Água ao Vinho Excelente: O Tempo de Deus Faz o Melhor</h2>
+            <p class="no-indent">Os serventes obedeceram no tempo do processo, e no caminho entre a obediência e o mestre-sala, o milagre aconteceu. O mestre-sala declarou admirado: <em>"Todo homem põe primeiro o vinho bom... mas tu guardaste até agora o bom vinho"</em> (João 2:10).</p>
+            <p>A pressa humana entrega o melhor no começo e termina na escassez. O tempo de Deus guarda o melhor vinho para o momento exato! Quando ouvir do céu um "ainda não", continue enchendo as talhas com a água da sua oração e fidelidade diária.</p>
+
+            <div class="devotional-box">
+                <h3 class="devotional-title">❖ Para Guardar no Coração ❖</h3>
+                <p class="no-indent"><strong>Autoexame:</strong></p>
+                <ol>
+                    <li>Em qual área da minha vida sinto que o "vinho acabou" (a alegria, os recursos ou a força) e preciso apresentá-la sinceramente a Jesus hoje?</li>
+                    <li>Tenho confundido o <em>"ainda não é chegada a minha hora"</em> de Deus com esquecimento ou rejeição às minhas orações?</li>
+                    <li>Quais são as "talhas de água" (deveres simples e passos de obediência diária) que Jesus está me pedindo para encher hoje, mesmo sem eu ver o milagre ainda?</li>
+                </ol>
+                <p class="prayer-text"><strong>Oração:</strong> "Senhor Jesus, apresento diante de Ti as áreas da minha vida onde o vinho da alegria e da provisão parece ter chegado ao fim. Perdoa-me pelas vezes em que tentei apressar o Teu relógio com a minha ansiedade. Ainda que eu ouça de Ti um 'ainda não', escolho confiar no Teu caráter e obedecer à Tua voz. Dá-me disposição para continuar enchendo as talhas com fé e trabalho sincero, na certeza de que o Senhor guarda o melhor vinho para o momento exato. Amém."</p>
+            </div>
+        </div>
+
+        <!-- CAPÍTULO 3 -->
+        <div class="page">
+            <span class="chapter-number">Capítulo 3</span>
+            <h1 class="chapter-title">O Tempo Determinado</h1>
+            <p class="chapter-subtitle">A Sabedoria das Estações em Eclesiastes</p>
+
+            <blockquote class="epigraph">
+                "Tudo tem o seu tempo determinado, e há tempo para todo o propósito debaixo do céu." (Eclesiastes 3:1)
+            </blockquote>
+
+            <p class="no-indent">Se em Lucas aprendemos a guardar no coração e em João aprendemos a esperar e obedecer até a hora do milagre, no livro de Eclesiastes somos ensinados a discernir <strong>as estações da vida</strong>.</p>
+            <p>O rei Salomão compõe em Eclesiastes 3:1-8 um poema formado por catorze pares de opostos. Ele nos mostra que a vida debaixo do sol não é feita de uma única estação, mas de contrastes necessários.</p>
+
+            <h3>1. O ciclo da existência e dos processos: Nascer e morrer; plantar e arrancar (v. 2)</h3>
+            <p class="no-indent">Nada na terra é estático. Há projetos e ciclos que nascem, e há outros que precisam encerrar. Quem planta precisa ter a paciência de esperar a germinação, mas também a coragem de arrancar aquilo que já cumpriu sua estação.</p>
+
+            <h3>2. O ciclo da restauração e da estrutura: Matar e curar; derribar e edificar (v. 3)</h3>
+            <p class="no-indent">Muitas vezes pedimos a Deus uma nova construção em nossa vida, mas nos esquecemos de que, antes de <strong>edificar</strong>, há o tempo de <strong>derribar</strong> estruturas antigas. Há feridas que requerem tempo de tratamento até que a <strong>cura</strong> se estabeleça.</p>
+
+            <h3>3. O ciclo das emoções humanas: Chorar e rir; prantear e dançar (v. 4)</h3>
+            <p class="no-indent">A fé verdadeira não nega a dor humana. Existe um tempo legítimo para chorar, assim como existe o tempo em que Deus transforma o pranto em dança.</p>
+
+            <h3>4. O ciclo do apego: Abraçar e afastar-se; buscar e perder; guardar e deitar fora (v. 5-6)</h3>
+            <p class="no-indent">Crescimento exige discernimento sobre o que reter e o que soltar. Há coisas pelas quais devemos lutar (<em>tempo de buscar</em>), mas há momentos em que a maior sabedoria é aceitar que certas portas se fecharam (<em>tempo de perder</em>), abrindo espaço para o novo de Deus.</p>
+
+            <h3>5. O ciclo da palavra e postura: Rasgar e coser; calar e falar; amar e odiar; guerra e paz (v. 7-8)</h3>
+            <p class="no-indent">Note a ordem espiritual: primeiro vem o <strong>tempo de calar</strong>, e só depois o <strong>tempo de falar</strong>. Quem não aprende a disciplina do silêncio nunca terá autoridade na palavra.</p>
+
+            <h2>A Beleza de Cada Estação</h2>
+            <p class="no-indent">Eclesiastes 3:11 declara: <em>"Tudo fez formoso em seu tempo; também pôs o mundo (a eternidade) no coração do homem"</em>. O inverno não é um erro da natureza; é a preparação invisível das raízes para a primavera.</p>
+
+            <div class="devotional-box">
+                <h3 class="devotional-title">❖ Para Guardar no Coração ❖</h3>
+                <p class="no-indent"><strong>Autoexame:</strong></p>
+                <ol>
+                    <li>Em qual estação da vida eu me encontro hoje (plantio ou colheita, derribar ou edificar, calar ou falar) e como tenho reagido a ela?</li>
+                    <li>Existe algo que já cumpriu o seu ciclo na minha jornada, mas que eu continuo tentando segurar por medo de viver o "tempo de perder e deitar fora"?</li>
+                    <li>Tenho ferido a mim mesmo ao comparar a minha estação atual de preparação com a estação de colheita de outras pessoas?</li>
+                </ol>
+                <p class="prayer-text"><strong>Oração:</strong> "Pai Eterno, Tu és o Senhor das estações e nada foge ao Teu controle. Dá-me discernimento espiritual para compreender o tempo em que estou vivendo hoje. Ensina-me a plantar sem desespero, a arrancar o que já não dá fruto, a calar quando devo ouvir e a confiar quando estruturas antigas precisam ser derribadas para que o novo seja edificado. Eu descanso na certeza de que fazes tudo formoso no Teu tempo. Em nome de Jesus, amém."</p>
+            </div>
+        </div>
+
+        <!-- CAPÍTULO 4 -->
+        <div class="page">
+            <span class="chapter-number">Capítulo 4</span>
+            <h1 class="chapter-title">Chronos e Kairos</h1>
+            <p class="chapter-subtitle">A Arte de Remir o Tempo segundo o Apóstolo Paulo</p>
+
+            <blockquote class="epigraph">
+                "Portanto, vede prudentemente como andais, não como néscios, mas como sábios, remindo o tempo, porquanto os dias são maus." (Efésios 5:15-16)<br>
+                "Andai com sabedoria para com os que estão de fora, remindo o tempo." (Colossenses 4:5)
+            </blockquote>
+
+            <p class="no-indent">Se Jesus em Caná e Salomão em Eclesiastes nos ensinam a respeitar o relógio de Deus, o apóstolo Paulo nos sacode para não cairmos na passividade. Esperar em Deus nunca foi sinônimo de desperdiçar a vida. Pelo contrário: porque os dias são breves e maus, precisamos <strong>remir o tempo</strong>.</p>
+
+            <h2>A Diferença entre Chronos e Kairos</h2>
+            <p class="no-indent">No idioma grego do Novo Testamento, destacam-se duas palavras distintas para o tempo:</p>
+
+            <table class="book-table">
+                <thead>
+                    <tr>
+                        <th>Conceito Grego</th>
+                        <th>Significado Prático</th>
+                        <th>Como o Vivenciamos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Chronos</strong></td>
+                        <td>Tempo cronológico, sequencial e quantitativo.</td>
+                        <td>Os ponteiros do relógio, o calendário, a idade que avança.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Kairos</strong></td>
+                        <td>Tempo oportuno, qualitativo, a oportunidade decisiva.</td>
+                        <td>O momento único de fazer o bem, perdoar, servir e ouvir a Deus.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p class="no-indent">Quando Paulo escreve <em>"remindo o tempo"</em> em Efésios 5:16 e Colossenses 4:5, a palavra que ele usa é <strong>kairos</strong>! O verbo grego traduzido por "remir" (<em>exagorazo</em>) era um termo comercial que significava <strong>"comprar tudo o que está disponível"</strong> ou <strong>"resgatar pagando um preço antes que a feira se feche"</strong>.</p>
+
+            <h2>Como desperdiçamos o Kairos nos "dias maus"?</h2>
+            <ul>
+                <li><strong>A distração constante:</strong> Trocamos oração, estudo da Palavra e convívio familiar por horas infindáveis de distrações vazias.</li>
+                <li><strong>A procrastinação do amor e do perdão:</strong> Adiamos o abraço e o pedido de perdão como se tivéssemos garantia do amanhã.</li>
+                <li><strong>O adiamento do chamado:</strong> Esperamos condições "perfeitas" que nunca chegam para começar a servir e cumprir o propósito de Deus.</li>
+            </ul>
+
+            <div class="devotional-box">
+                <h3 class="devotional-title">❖ Para Guardar no Coração ❖</h3>
+                <p class="no-indent"><strong>Autoexame:</strong></p>
+                <ol>
+                    <li>Quais têm sido os maiores "ladrões de tempo" na minha rotina que estão consumindo as minhas horas, mas deixando a minha alma vazia?</li>
+                    <li>Que atitude importante — um perdão, uma conversa em família, um projeto ou chamado de Deus — eu tenho procrastinado como se o amanhã estivesse garantido?</li>
+                    <li>Nas minhas interações diárias, tenho andado com sabedoria e aproveitado as oportunidades (<em>Kairos</em>) para refletir o caráter de Cristo?</li>
+                </ol>
+                <p class="prayer-text"><strong>Oração:</strong> "Senhor Deus, desperta o meu espírito para a preciosidade de cada dia que me concedes. Não permitas que eu caminhe como um tolo distraído pelas vaidades deste mundo, deixando escorrer pelas mãos as oportunidades sagradas que preparaste para mim. Dá-me prudência para remir o tempo, resgatando minhas horas para a oração, para a família e para a missão que confiaste às minhas mãos. Em nome de Jesus, amém."</p>
+            </div>
+        </div>
+
+        <!-- CAPÍTULO 5 -->
+        <div class="page">
+            <span class="chapter-number">Capítulo 5</span>
+            <h1 class="chapter-title">Como Viver o Tempo Hoje</h1>
+            <p class="chapter-subtitle">Práticas para uma Vida com Propósito</p>
+
+            <p class="no-indent">Quando unimos <strong>Lucas 2</strong> (o silêncio reflexivo de Maria), <strong>João 2</strong> (a hora do milagre em Caná), <strong>Eclesiastes 3</strong> (as estações de Salomão) e <strong>Efésios 5 / Colossenses 4</strong> (o zelo de Paulo), encontramos a bússola completa para governar nossos dias.</p>
+
+            <h2>1. Cultive a meditação interior (O princípio de Belém e Nazaré)</h2>
+            <p class="no-indent">Não reaja a tudo no impulso do segundo em que acontece. Quando ouvir uma palavra de Deus ou enfrentar algo que ainda não compreende, leve ao secreto. Guarde no coração, medite e permita que Deus una as peças no tempo certo.</p>
+
+            <h2>2. Obedeça no "Ainda Não" (O princípio das Bodas de Caná)</h2>
+            <p class="no-indent">O vinho acabou em alguma área da sua vida e parece que a hora da resposta ainda não chegou? Não murmure nem abandone a festa. Ouça o conselho de Maria: <em>"Fazei tudo quanto Ele vos disser"</em>. Continue enchendo as talhas de água com o seu dever diário, porque a obediência precede a transformação.</p>
+
+            <h2>3. Discirna em qual estação você está (O princípio de Eclesiastes)</h2>
+            <p class="no-indent">Muitas dores emocionais e espirituais nascem porque queremos colher no mês em que deveríamos estar plantando, ou falar na hora em que deveríamos calar. Respeite o processo das suas estações e não compare o seu "inverno" de preparação com a "primavera" de colheita do seu próximo.</p>
+
+            <h2>4. Resgate as oportunidades diárias (O princípio de Efésios e Colossenses)</h2>
+            <p class="no-indent">Você não pode parar o relógio (<em>Chronos</em>), mas pode dar valor eterno a cada hora (<em>Kairos</em>). Dedique o seu melhor tempo à comunhão com Deus, à sua família e à missão que Ele lhe confiou, eliminando os ladrões de atenção que roubam sua paz.</p>
+
+            <div class="devotional-box">
+                <h3 class="devotional-title">❖ Para Guardar no Coração ❖</h3>
+                <p class="no-indent"><strong>Autoexame:</strong></p>
+                <ol>
+                    <li>Dos quatro princípios estudados (guardar em silêncio, obedecer na espera, respeitar a estação ou remir a oportunidade), qual deles eu mais preciso praticar nesta semana?</li>
+                    <li>Minha agenda diária reflete aquilo que eu digo amar, ou tenho entregado apenas as "sobras" do meu tempo para Deus e para a minha família?</li>
+                    <li>Que decisão prática e imediata posso tomar hoje mesmo para alinhar o meu ritmo diário ao propósito eterno do Criador?</li>
+                </ol>
+                <p class="prayer-text"><strong>Oração:</strong> "Senhor, como orou Moisés no Salmo 90, ensina-me a contar os meus dias de tal maneira que eu alcance um coração sábio. Ajuda-me a viver o equilíbrio perfeito da Tua Palavra: tendo a serenidade de Maria para meditar, a fé de Caná para obedecer, a maturidade de Salomão para aceitar as estações e o zelo de Paulo para aproveitar cada oportunidade. Consagro a Ti o meu passado, o meu presente e o meu futuro. Em nome de Jesus, amém."</p>
+            </div>
+        </div>
+
+        <!-- CONCLUSÃO -->
+        <div class="page">
+            <span class="chapter-number">Encerramento</span>
+            <h1 class="chapter-title">Conclusão</h1>
+            <p class="chapter-subtitle">Quando o Tempo se Encontrar com a Eternidade</p>
+
+            <p class="no-indent">O salmista Moisés, no Salmo 90:12, fez uma das orações mais belas e necessárias de toda a Bíblia:</p>
+
+            <blockquote class="epigraph">
+                "Ensina-nos a contar os nossos dias, de tal maneira que alcancemos corações sábios." (Salmo 90:12)
+            </blockquote>
+
+            <p class="no-indent">Contar os dias não é viver com medo da passagem dos anos; é viver com reverência pela vida. É saber que cada manhã é uma dádiva assinada pela misericórdia do Senhor.</p>
+
+            <p>Que ao fechar este livro, você possa carregar consigo estas quatro chaves espirituais:</p>
+            <ol>
+                <li><strong>A serenidade de Maria:</strong> Para guardar no coração aquilo que o tempo ainda vai revelar.</li>
+                <li><strong>A fé das Bodas de Caná:</strong> Para continuar enchendo as talhas em obediência enquanto aguarda a hora do milagre de Jesus, sabendo que Ele guarda o melhor vinho para o momento certo.</li>
+                <li><strong>A maturidade de Salomão:</strong> Para respeitar o tempo de plantar e o de colher, o de chorar e o de sorrir, confiando que Deus faz tudo formoso em Seu tempo.</li>
+                <li><strong>A prudência de Paulo:</strong> Para remir o tempo, aproveitando cada oportunidade com sabedoria antes que o dia se feche.</li>
+            </ol>
+
+            <p>Porque, no fim da nossa jornada, o que realmente importará não será apenas quantos anos duramos sobre a terra, mas o quanto da eternidade de Deus permitimos florescer dentro do nosso tempo.</p>
+
+            <div class="divider">❖ ❖ ❖</div>
+        </div>
+
+        <!-- CONTRACAPA (QUARTA CAPA) -->
+        <div class="cover-page" style="page-break-after: auto;">
+            <div class="cover-subtitle-top">O Tempo — Oséias de Souza Reis</div>
+            <div style="text-align: left; font-size: 10.5pt; line-height: 1.5; color: #f0e9db;">
+                <p class="no-indent" style="text-align: center; font-family: 'Cinzel', serif; font-size: 12pt; color: #F3E5AB; margin-bottom: 14px;">
+                    <strong>Você tem apenas deixado as horas passarem ou vivido a eternidade dentro do seu tempo?</strong>
+                </p>
+                <p class="no-indent">Vivemos na geração mais apressada da história. Corremos contra os ponteiros do relógio, tentamos antecipar respostas que ainda estão em gestação e, muitas vezes, nos desesperamos quando o "vinho" da alegria seca antes do fim da festa. Mas o relógio de Deus não funciona na frequência da ansiedade humana.</p>
+                <p class="no-indent">Em <strong>O Tempo</strong>, <strong>Oséias de Souza Reis</strong> conduz você por uma jornada profunda pelas Escrituras através de quatro chaves bíblicas transformadoras:</p>
+                <ul style="padding-left: 18px; margin-bottom: 14px;">
+                    <li><strong>O Segredo do Silêncio (Lucas 2):</strong> Por que Maria guardava tudo no coração.</li>
+                    <li><strong>A Hora do Milagre (João 2):</strong> O que fazer quando o vinho acaba e Jesus diz: <em>"Ainda não é chegada a minha hora"</em>.</li>
+                    <li><strong>A Sabedoria das Estações (Eclesiastes 3):</strong> Como discernir o tempo de plantar, arrancar, calar e falar.</li>
+                    <li><strong>O Resgate das Oportunidades (Efésios 5):</strong> A diferença entre <em>Chronos</em> e <em>Kairos</em> para remir o tempo.</li>
+                </ul>
+                <p class="no-indent" style="text-align: center; font-style: italic; color: #D4AF37; margin-top: 16px;">
+                    "A pressa humana entrega o melhor no começo e termina na escassez. O tempo de Deus guarda o melhor vinho para o momento exato."
+                </p>
+            </div>
+            <div class="cover-author">Edição Oficial</div>
+        </div>
+
+    </div>
+
+    <!-- SCRIPT DE EXPORTAÇÃO DIRETA PARA WORD (FORMATO A5) -->
+    <script>
+        function exportToWordA5() {
+            const content = document.getElementById('book-content').innerHTML;
+            
+            // Configuração específica do Microsoft Word para página A5 (148mm x 210mm)
+            const wordXmlHeader = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' 
+                      xmlns:w='urn:schemas-microsoft-com:office:word' 
+                      xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                    <meta charset='utf-8'>
+                    <title>Livro O Tempo - Oséias de Souza Reis</title>
+                    <!--[if gte mso 9]>
+                    <xml>
+                        <w:WordDocument>
+                            <w:View>Print</w:View>
+                            <w:Zoom>100</w:Zoom>
+                            <w:DoNotOptimizeForBrowser/>
+                        </w:WordDocument>
+                    </xml>
+                    <![endif]-->
+                    <style>
+                        @page Section1 {
+                            size: 148mm 210mm;
+                            margin: 18mm 16mm 18mm 16mm;
+                            mso-header-margin: 10mm;
+                            mso-footer-margin: 10mm;
+                        }
+                        div.Section1 { page: Section1; }
+                        body {
+                            font-family: 'Garamond', 'Georgia', serif;
+                            font-size: 11.5pt;
+                            line-height: 1.5;
+                            color: #1a1817;
+                        }
+                        h1 { font-size: 18pt; color: #420D18; text-align: center; page-break-before: always; }
+                        h2 { font-size: 13pt; color: #420D18; margin-top: 14pt; }
+                        h3 { font-size: 11.5pt; color: #2b2623; margin-top: 10pt; }
+                        p { text-align: justify; margin-bottom: 8pt; text-indent: 18pt; }
+                        blockquote { font-style: italic; background: #f6f1e7; border-left: 3pt solid #9A7B38; padding: 8pt 12pt; margin: 12pt 0; }
+                        table { width: 100%; border-collapse: collapse; margin: 12pt 0; }
+                        th { background-color: #420D18; color: #ffffff; padding: 6pt; border: 1pt solid #420D18; }
+                        td { border: 1pt solid #cccccc; padding: 6pt; }
+                        .devotional-box { border: 1pt solid #c5a059; background-color: #f8f4ec; padding: 12pt; margin-top: 14pt; }
+                        .cover-page { text-align: center; background-color: #2A070E; color: #F3E5AB; padding: 30pt; }
+                    </style>
+                </head>
+                <body>
+                    <div class="Section1">
+                        ${content}
+                    </div>
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob(['\ufeff', wordXmlHeader], {
+                type: 'application/msword'
+            });
+
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'Livro-O-Tempo-Oseias-Reis-A5.doc';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
